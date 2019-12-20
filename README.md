@@ -1,3 +1,3 @@
 # rfinference
 
-![rfinference](rfinference.png){:height="100px" width="100px"}
+![rfinference](rfinference.png){:height=100 width=100}
