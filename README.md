@@ -1,3 +1,3 @@
 # rfinference
 
-![rfinferencet][rfinference.png]
+![rfinference](rfinference.png)
