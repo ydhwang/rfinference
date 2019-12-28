@@ -210,3 +210,53 @@ get_Kernel <- function(store){
   return(K)
 }
 
+
+#' forest_summary
+#'
+#' a function producing the incidence tibble
+#'
+#' @param rffit a random forest object from randomForest::randomForest
+#' @param design the design matrix.
+#' @param ncore == TRUE will choose number of cores automatically. == FALSE will use 2 cores.
+#' @return a N by N matrix, symmetric. Digonal elements are all B (= number of trees).
+#'
+#' @examples
+#' # get_Kernel(store)
+#'
+#' @export
+
+forest_summary <- function(rf_fit, design, ncore = TRUE){
+  B <- length(rf_fit$mse) # number of trees in the forest
+  if (ncore) {
+    cl <- makeCluster((detectCores(logical = FALSE) - 1))
+  }else{
+    cl <- 2
+  }
+  dat <- as.data.frame(design)
+  registerDoSNOW(cl)
+  outer_list <-
+    foreach (b = 1:B, .options.snow = opts,
+             .packages=c("randomForest", "tidyverse", "rfinference")
+    ) %dopar% {
+      tree_b <- randomForest::getTree(rf_fit, k = b, labelVar = TRUE)
+      colnames(tree_b) <- stringr::str_replace_all(colnames(tree_b), pattern = " ", replacement = "_")
+      tree_summary_b <- rfinference::getConds(tree_b)
+      incidence_count <- function(dat, tree_summary_b, condition_id){
+        condition <- tree_summary_b$condition[condition_id]
+        flag <- with(dat, eval(parse(text = condition)))
+        which(flag)
+      }
+
+      count_list <- sapply(1:nrow(tree_summary_b),
+                           incidence_count, dat = dat, tree_summary_b = tree_summary_b)
+
+      index <- tibble(ID = 1:nrow(dat), leaf_id = NA)
+      for (s in seq_along(count_list)){
+        index <- index %>% mutate(leaf_id = ifelse(ID %in% count_list[[s]], s, leaf_id))
+      }
+      index
+    }
+  store <- bind_rows(outer_list, .id = "tree") %>%
+    mutate(tree = as.integer(tree)) %>% select(ID, everything())
+  return(store)
+}
