@@ -177,3 +177,34 @@ borehole <- function(xx)
   y <- frac1 / frac2
   return(y)
 }
+
+#' get_Kernel
+#'
+#' a function producing the RF kernel
+#'
+#' @param store a tibble storing the results from a tree, with three columns: ID,  tree, leaf_id
+#' ID is the ID of the data points, tree is the index for the trees,
+#' leaf_id is the index for the leaf for each tree.
+#'
+#' @return a N by N matrix, symmetric. Digonal elements are all B (= number of trees).
+#'
+#' @examples
+#' # get_Kernel(store)
+#'
+#' @export
+
+get_Kernel <- function(store){
+  store_0 <- store %>% rename(ID_source = ID)
+  store_1 <- store %>% rename(ID_sink = ID)
+  N <- max(store$ID)
+  store_full <- left_join(store_0, store_1, by = c("tree", "leaf_id")) %>%
+    group_by(ID_source, ID_sink) %>%
+    summarise(N = n())
+  K_full<- expand.grid(ID_source = 1:N, ID_sink = 1:N)
+  large_full <- left_join(K_full, store_full, by = c("ID_source", "ID_sink"))  %>%
+    spread(ID_sink, N)
+  K <- large_full[,-1]
+  K[which(is.na(K), arr.ind = TRUE)] <- 0
+  return(K)
+}
+
