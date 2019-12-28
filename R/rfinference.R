@@ -1,5 +1,7 @@
 ## roxygen
 
+#' @importFrom tibble randomforest tidyverse
+
 #' finding the previous conditions in the tree
 #'
 #' finding the "parents"
