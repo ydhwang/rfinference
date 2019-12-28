@@ -114,7 +114,7 @@ getConds <- function(tree){
 #' @examples
 #' # borehole(xx)
 #'
-#' @export
+#' @export y calculated values of borehole functions at xx
 
 
 borehole <- function(xx)
