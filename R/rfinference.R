@@ -248,7 +248,6 @@ forest_summary <- function(rf_fit, design, ncore = TRUE){
         flag <- with(dat, eval(parse(text = condition)))
         which(flag)
       }
-
       count_list <- sapply(1:nrow(tree_summary_b),
                            incidence_count, dat = dat, tree_summary_b = tree_summary_b)
 
@@ -260,5 +259,6 @@ forest_summary <- function(rf_fit, design, ncore = TRUE){
     }
   store <- bind_rows(outer_list, .id = "tree") %>%
     mutate(tree = as.integer(tree)) %>% select(ID, everything())
+  stopCluster(cl)
   return(store)
 }
