@@ -262,3 +262,20 @@ forest_summary <- function(rf_fit, design, ncore = TRUE){
   stopCluster(cl)
   return(store)
 }
+
+#' get_g
+#'
+#' a function producing the incidence tibble
+#'
+#' @param K N by N matrix from get_Kernel
+#' @param z the indicator vectorfor missing
+#' @return a N by 1 vector of g.
+#'
+#' @examples
+#' # get_g(K, z)
+#'
+#' @export
+
+get_g <- function(K, z){
+  sapply(K, function(x, z) sum(x / sum(x * z)), z = z)
+}
