@@ -279,3 +279,32 @@ forest_summary <- function(rf_fit, design, ncore = TRUE){
 get_g <- function(K, z){
   sapply(K, function(x, z) sum(x / sum(x * z)), z = z)
 }
+
+
+#' get_m
+#'
+#' a function producing the last step inference
+#'
+#' @param K N by N matrix (list) from get_Kernel
+#' @param z the indicator vectorfor missing
+#' @param y the response vector
+#' @return a list of three elements; m vector (length of N), d_i vector (length of N), v_hat (variance estimate, scalar)
+#'
+#' @examples
+#' # get_g(K, z)
+#'
+#' @export
+
+get_m <- function(K, y, z = rep(1, length(y))){
+  y_obs <- y[z==1]
+  m <- rep(NA, N)
+  for (l in 1:N){
+    w <- as.numeric(K[[l]])[z == 1]
+    m[l] <- weighted.mean(y_obs, w = w)
+  }
+  d_i <- rep(NA, N)
+  d_i <- ifelse(z == 1, m + z*g*(y - m), m)
+  v_hat <- var(d_i) / N
+  list(m = m, d_i = d_i, v_hat = v_hat)
+}
+
