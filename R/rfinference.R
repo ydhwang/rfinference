@@ -1,6 +1,6 @@
 ## roxygen
 
-#' @importFrom tibble randomforest tidyverse
+#' @importFrom randomForest tidyverse
 
 #' finding the previous conditions in the tree
 #'
@@ -111,12 +111,12 @@ getConds <- function(tree){
 #'
 #' @param xx a design matrix of 8 dimension
 #'
-#' @return a vector containing evaluated values of borehole function.
+#' @return y calculated values of borehole functions at xx; a vector containing evaluated values of borehole function.
 #'
 #' @examples
 #' # borehole(xx)
 #'
-#' @export y calculated values of borehole functions at xx
+#' @export
 
 
 borehole <- function(xx)
