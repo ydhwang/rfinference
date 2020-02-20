@@ -229,8 +229,8 @@ forest_summary <- function(rf_fit, design, ncore = TRUE){
   progress <- function(b) if( b %% 100 == 0) {cat(sprintf("task %d is complete\n", b))}
   opts <- list(progress=progress)
   B <- length(rf_fit$mse) # number of trees in the forest
-  if (ncore) {
-    cl <- makeCluster((detectCores(logical = FALSE) - 1))
+  if (!is.null(ncore)) {
+    cl <- makeCluster(ncore)
   }else{
     cl <- 2
   }
@@ -306,5 +306,18 @@ get_m <- function(K, y, z = rep(1, length(y))){
   d_i <- ifelse(z == 1, m + z*g*(y - m), m)
   v_hat <- var(d_i) / N
   list(m = m, d_i = d_i, v_hat = v_hat)
+}
+
+
+
+fast_kernel <- function(data_obj){
+  # calculate K with Rcpp
+  model_obj <- new(modelobject,0) # 0 is just a dummy value with no meaning
+
+  model_obj$z_input = data_obj$z_input ;
+  model_obj$J = data_obj$J ;
+
+  return(model_obj)
+
 }
 
