@@ -230,8 +230,8 @@ forest_summary <- function(rf_fit, design, ncore = TRUE){
   progress <- function(b) if( b %% 100 == 0) {cat(sprintf("task %d is complete\n", b))}
   opts <- list(progress=progress)
   B <- length(rf_fit$mse) # number of trees in the forest
-  if (ncore) {
-    cl <- makeCluster((detectCores(logical = FALSE) - 1))
+  if (!is.null(ncore)) {
+    cl <- makeCluster(ncore)
   }else{
     cl <- 2
   }
