@@ -101,8 +101,9 @@ cond_root <- function(tree, id){
 
 getConds <- function(tree){
   # backward compatibility
-  id.leafs <- id.leafs <- which(tree$status == -1)
-  tibble::tibble(condition = sapply(id.leafs, cond_root, tree = tree, simplify = TRUE), prediction = tree[tree$status == -1, "prediction"])
+  id.leafs <- which(tree$status == -1)
+  tibble::tibble(condition = sapply(id.leafs, cond_root, tree = tree, simplify = TRUE),
+                 prediction = tree[tree$status == -1, "prediction"])
 }
 
 #' borehole
