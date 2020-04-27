@@ -161,14 +161,14 @@ borehole <- function(xx)
   # Hl ∈ [700, 820]	potentiometric head of lower aquifer (m)
   # L ∈ [1120, 1680]	length of borehole (m)
   # Kw ∈ [9855, 12045]	hydraulic conductivity of borehole (m/yr)
-  rw <- xx[1] * 0.1 + 0.05
-  r  <- xx[2] * 49900 + 100
-  Tu <- xx[3] * 52530 + 63070
-  Hu <- xx[4] * 120 + 990
-  Tl <- xx[5] * 52.9 + 63.1
-  Hl <- xx[6] * 120 + 700
-  L  <- xx[7] * 560 + 1120
-  Kw <- xx[8] * 2190 + 9855
+  rw <- xx[,1] * 0.1 + 0.05
+  r  <- xx[,2] * 49900 + 100
+  Tu <- xx[,3] * 52530 + 63070
+  Hu <- xx[,4] * 120 + 990
+  Tl <- xx[,5] * 52.9 + 63.1
+  Hl <- xx[,6] * 120 + 700
+  L  <- xx[,7] * 560 + 1120
+  Kw <- xx[,8] * 2190 + 9855
 
   frac1 <- 2 * pi * Tu * (Hu-Hl)
 
